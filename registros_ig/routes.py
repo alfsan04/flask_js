@@ -1,8 +1,9 @@
-from flask import render_template, jsonify #para transformar a json un archivo si no lo es
+from flask import render_template, jsonify, request #para transformar a json un archivo si no lo es
 import sqlite3
+from http import HTTPStatus
 
 from registros_ig import app
-from registros_ig.models import select_all
+from registros_ig.models import select_all, insert
 
 @app.route("/")
 def index():
@@ -30,7 +31,22 @@ def all_movements():
 
 @app.route("/api/v1.0/new", methods=["POST"])
 def new():
-    return "Esto hará un alta"
+    registro = request.json
+    #falta la validación del registro
+    try:
+        insert([registro["date"], registro["concept"], registro["quantity"]])
+        return jsonify(
+            {
+                "status": "OK"
+            }
+        ), HTTPStatus.CREATED
+    except sqlite3.Error as e:
+        return jsonify(
+            {
+                "status": "Error",
+                "data": str(e)
+            }
+        ), HTTPStatus.BAD_REQUEST
 
 @app.route("/api/v1.0/delete/<int:id>", methods=["DELETE"])
 def delete(id):
