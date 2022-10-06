@@ -6,6 +6,25 @@ function peticion_todos_handler() {
             alert(this.responseText)
             //TODO: Procesar el responseText, transformarlo en un objeto(Diccionario) de javascript
             //      y transformarlo en filas de la tabla
+            const los_datos = JSON.parse(this.responseText)
+            const la_tabla = document.querySelector("#movements_table")
+            const movimientos = los_datos.data
+
+            for (let i=0; i<movimientos.length; i++) {
+                item = movimientos[i]
+                const trow = document.createElement("tr")
+                const tddate = document.createElement("td")
+                tddate.innerHTML = item.date
+                trow.appendChild(tddate)
+                const tdconcept = document.createElement("td")
+                tdconcept.innerHTML = item.concept
+                trow.appendChild(tdconcept)
+                const tdquantity = document.createElement("td")
+                tdquantity.innerHTML = item.quantity
+                trow.appendChild(tdquantity)
+                la_tabla.appendChild(trow)
+            }
+
         } else {
             alert("Se ha producido un error en la consulta de movimientos")
         }
